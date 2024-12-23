@@ -27,7 +27,7 @@ RUN git checkout b9ab48cad45976ba42b2ff17b229c071f0df9390
 # Install dependencies with overrides for known working versions on this base image
 RUN python3 -m pip install -e . "torch<2" "torchaudio<2" "numpy<2" --no-cache-dir
 # Run once to ensure demucs works and trigger the default model download
-RUN python3 -m demucs -d cpu test.mp3 
+RUN python3 -m demucs -d cpu test.mp3
 # Cleanup output - we just used this to download the model
 RUN rm -r separated
 
