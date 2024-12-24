@@ -1,5 +1,5 @@
 # Base image supports Nvidia CUDA but does not require it and can also run demucs on the CPU
-FROM nvidia/cuda:12.6.2-base-ubuntu22.04
+FROM nvidia/cuda:12.4.0-runtime-ubuntu22.04
 
 USER root
 ENV TORCH_HOME=/data/models
