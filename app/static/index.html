@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demucs Music Splitter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .progress {
+            display: none;
+            margin: 20px 0;
+        }
+        .downloads {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Demucs Music Splitter</h1>
+    
+    <div class="upload-container">
+        <input type="file" id="fileInput" accept=".mp3,.wav">
+        <button onclick="uploadFile()">Upload and Process</button>
+    </div>
+
+    <div class="progress" id="progress">
+        Processing... Please wait...
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="downloads" id="downloads"></div>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const progress = document.getElementById('progress');
+            const error = document.getElementById('error');
+            const downloads = document.getElementById('downloads');
+            
+            if (!fileInput.files.length) {
+                error.textContent = 'Please select a file first';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            progress.style.display = 'block';
+            error.textContent = '';
+            downloads.innerHTML = '';
+
+            try {
+                const response = await fetch('/upload/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    downloads.innerHTML = '<h3>Download Separated Tracks:</h3>';
+                    data.output_files.forEach(file => {
+                        downloads.innerHTML += `
+                            <p>
+                                <a href="/download/${data.base_path}/${file}" download>
+                                    ${file}
+                                </a>
+                            </p>
+                        `;
+                    });
+                } else {
+                    error.textContent = data.error || 'Upload failed';
+                }
+            } catch (e) {
+                error.textContent = 'An error occurred during upload';
+            } finally {
+                progress.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
