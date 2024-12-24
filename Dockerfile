@@ -19,10 +19,9 @@ RUN apt update && apt install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone Demucs (now maintained in the original author's github space)
-RUN git clone --single-branch --branch main https://github.com/adefossez/demucs /lib/demucs
+RUN git clone --single-branch --branch main https://github.com/MichielDV-vives/Cloud_for_AI /lib/demucs
 WORKDIR /lib/demucs
-# Checkout known stable commit on main
-RUN git checkout b9ab48cad45976ba42b2ff17b229c071f0df9390
+
 
 # Install dependencies with overrides for known working versions on this base image
 RUN python3 -m pip install -e . "torch<2" "torchaudio<2" "numpy<2" --no-cache-dir
