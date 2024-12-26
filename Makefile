@@ -95,5 +95,3 @@ stop: ## Stop the FastAPI server
 .PHONY:
 logs: ## View FastAPI server logs
 	docker logs -f $(APP_NAME)
-
-
