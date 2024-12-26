@@ -60,5 +60,3 @@ fi' > /start.sh && chmod +x /start.sh
 # Use the startup script as entrypoint
 ENTRYPOINT ["/start.sh"]
 CMD ["serve"]
-
-

@@ -10,51 +10,133 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f5f5f5;
         }
         .upload-container {
             border: 2px dashed #ccc;
             padding: 20px;
             text-align: center;
             margin: 20px 0;
+            background-color: white;
+            border-radius: 8px;
         }
         .progress {
             display: none;
             margin: 20px 0;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 4px;
+            text-align: center;
         }
         .downloads {
             margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .error {
-            color: red;
+            color: #dc3545;
             margin: 10px 0;
+            padding: 10px;
+            background-color: #ffeaea;
+            border-radius: 4px;
+            display: none;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <h1>Demucs Music Splitter</h1>
-    
+
     <div class="upload-container">
         <input type="file" id="fileInput" accept=".mp3,.wav">
         <button onclick="uploadFile()">Upload and Process</button>
     </div>
 
     <div class="progress" id="progress">
-        Processing... Please wait...
+        <div>Processing... Please wait...</div>
+        <div>This may take several minutes depending on the file size</div>
     </div>
 
     <div class="error" id="error"></div>
 
-    <div class="downloads" id="downloads"></div>
+    <div class="downloads" id="downloads" style="display: none;">
+        <h3>Download Separated Tracks:</h3>
+        <div class="download-grid" id="downloadGrid"></div>
+    </div>
 
     <script>
+        async function downloadFile(url, filename) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Download failed');
+
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(downloadUrl);
+                document.body.removeChild(a);
+            } catch (error) {
+                showError('Failed to download file: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+            setTimeout(() => {
+                error.style.display = 'none';
+            }, 5000);
+        }
+
         async function uploadFile() {
             const fileInput = document.getElementById('fileInput');
             const progress = document.getElementById('progress');
             const error = document.getElementById('error');
             const downloads = document.getElementById('downloads');
-            
+            const downloadGrid = document.getElementById('downloadGrid');
+
             if (!fileInput.files.length) {
-                error.textContent = 'Please select a file first';
+                showError('Please select a file first');
                 return;
             }
 
@@ -62,8 +144,9 @@
             formData.append('file', fileInput.files[0]);
 
             progress.style.display = 'block';
-            error.textContent = '';
-            downloads.innerHTML = '';
+            error.style.display = 'none';
+            downloads.style.display = 'none';
+            downloadGrid.innerHTML = '';
 
             try {
                 const response = await fetch('/upload/', {
@@ -74,21 +157,23 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    downloads.innerHTML = '<h3>Download Separated Tracks:</h3>';
+                    downloadGrid.innerHTML = '';
                     data.output_files.forEach(file => {
-                        downloads.innerHTML += `
-                            <p>
-                                <a href="/download/${data.base_path}/${file}" download>
-                                    ${file}
-                                </a>
-                            </p>
+                        const downloadUrl = `/download/${data.base_path}/${file}`;
+                        downloadGrid.innerHTML += `
+                            <a href="#"
+                               class="download-btn"
+                               onclick="downloadFile('${downloadUrl}', '${file}'); return false;">
+                                Download ${file.split('.')[0]}
+                            </a>
                         `;
                     });
+                    downloads.style.display = 'block';
                 } else {
-                    error.textContent = data.error || 'Upload failed';
+                    showError(data.error || 'Upload failed');
                 }
             } catch (e) {
-                error.textContent = 'An error occurred during upload';
+                showError('An error occurred during upload');
             } finally {
                 progress.style.display = 'none';
             }
@@ -96,6 +181,4 @@
     </script>
 </body>
 </html>
-
-
 
