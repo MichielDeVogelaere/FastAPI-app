@@ -68,22 +68,37 @@ async def upload_file(file: UploadFile = File(...)):
         os.makedirs(output_dir, exist_ok=True)
 
         # Run Demucs processing
-        cmd = f"python3 -m demucs -n htdemucs --mp3 -j 2 --overlap 0.25 --shifts 1 --two-stems=vocals --out {OUTPUT_DIR} {file_path}"
+        cmd = f"python3 -m demucs -n htdemucs --mp3 -j 3 --overlap 0.25 --shifts 1 --two-stems=vocals --out {OUTPUT_DIR} {file_path}"
         logging.info(f"Running command: {cmd}")
         returncode = await run_demucs_command(cmd)
 
         if returncode == 0:
-            # Get the output files
-            output_files = [f for f in os.listdir(output_dir) if f.endswith('.mp3')]
+            # Look for the "no_vocals.mp3" file in the output directory
+            output_files = [f for f in os.listdir(output_dir) if f == 'no_vocals.mp3']
 
             logging.info(f"Output directory: {output_dir}")
             logging.info(f"Generated output files: {output_files}")
 
-            return JSONResponse({
-                "message": "Processing complete",
-                "output_files": output_files,
-                "base_path": f"htdemucs/{base_name}"
-            })
+            if output_files:
+                # Rename "no_vocal.mp3" to "songname_karaoke-version.mp3"
+                new_filename = f"{base_name}_karaoke-version.mp3"
+                old_file_path = os.path.join(output_dir, 'no_vocals.mp3')
+                new_file_path = os.path.join(output_dir, new_filename)
+
+                # Rename the file
+                os.rename(old_file_path, new_file_path)
+
+                # Return the renamed output file information
+                return JSONResponse({
+                    "message": "Processing complete",
+                    "output_files": [new_filename],
+                    "base_path": f"htdemucs/{base_name}"
+                })
+            else:
+                logging.error("no_vocals.mp3 not found in the output directory.")
+                return JSONResponse({
+                    "error": "no_vocals.mp3 not found in the output"
+                }, status_code=500)
         else:
             logging.error("Demucs processing failed.")
             return JSONResponse({

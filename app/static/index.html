@@ -5,100 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demucs Music Splitter</title>
     <style>
+        /* General Body Styling */
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #ffcc99;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-image: url('https://web.archive.org/web/20090820112641/http://geocities.com/cheersthree/space2.gif');
+            background-repeat: repeat;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 2.5rem;
+            color: #00f; /* Light blue text */
+            text-shadow: 2px 2px #000;
+        }
+
+        /* Main Content Styling */
+        .container {
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            border: 5px solid #00f; /* Light blue border */
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        /* Upload Section */
         .upload-container {
-            border: 2px dashed #ccc;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0;
-            background-color: white;
+            background-color: rgba(173, 216, 230, 0.8); /* Light blue background */
+            padding: 30px;
             border-radius: 8px;
-        }
-        .progress {
-            display: none;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #e8f4f8;
-            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+            margin-bottom: 40px;
+            border: 3px solid #00f; /* Light blue border */
         }
-        .downloads {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .error {
-            color: #dc3545;
-            margin: 10px 0;
+
+        .upload-container input[type="file"] {
+            margin-bottom: 20px;
             padding: 10px;
-            background-color: #ffeaea;
-            border-radius: 4px;
-            display: none;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 400px;
         }
-        .download-btn {
-            display: inline-block;
-            padding: 8px 16px;
-            margin: 5px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .download-btn:hover {
-            background-color: #0056b3;
-        }
-        button {
-            padding: 8px 16px;
-            background-color: #28a745;
+
+        .upload-container button {
+            padding: 10px 20px;
+            background-color: #00f; /* Light blue button */
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 1rem;
             transition: background-color 0.3s;
         }
-        button:hover {
+
+        .upload-container button:hover {
+            background-color: #0000cc; /* Darker blue on hover */
+        }
+
+        /* Progress and Error Messages */
+        .progress {
+            background-color: rgba(255, 255, 0, 0.8); /* High yellow background */
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            color: #dc3545;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: rgba(255, 0, 0, 0.8); /* Red background */
+            border-radius: 6px;
+            display: none;
+            text-align: center;
+        }
+
+        /* Download Section */
+        .downloads {
+            background-color: rgba(173, 216, 230, 0.8); /* Light blue background */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            border: 3px solid #00f; /* Light blue border */
+        }
+
+        .downloads h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #00f; /* Light blue text */
+        }
+
+        .download-btn {
+            display: block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
             background-color: #218838;
         }
-        input[type="file"] {
-            margin-bottom: 10px;
-        }
+
+        /* Responsive Grid for Download Buttons */
         .download-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
         }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 16px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #ffcc99;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #00f;
+            border-radius: 10px;
+            border: 3px solid #ffcc99;
+        }
+
+        /* Trumpet Guy GIF */
+        .trumpet-guy {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* Music Waves GIF */
+        .music-waves {
+            display: block;
+            margin: 20px auto;
+        }
+
     </style>
 </head>
 <body>
+
     <h1>Demucs Music Splitter</h1>
 
-    <div class="upload-container">
-        <input type="file" id="fileInput" accept=".mp3,.wav">
-        <button onclick="uploadFile()">Upload and Process</button>
+    <div class="container">
+        <!-- Music Waves GIF -->
+        <img src="https://web.archive.org/web/20091027110843/http://www.geocities.com/CapeCanaveral/Hall/5514/awave.gif" alt="Music Waves" class="music-waves">
+
+        <!-- Upload Section -->
+        <div class="upload-container">
+            <input type="file" id="fileInput" accept=".mp3,.wav">
+            <button onclick="uploadFile()">Upload and Process</button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress" id="progress">
+            <div>Processing... Please wait...</div>
+            <div>This may take several seconds depending on the file size</div>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error" id="error"></div>
+
+        <!-- Download Section -->
+        <div class="downloads" id="downloads">
+            <h3>Download Karaoke Track:</h3>
+            <div class="download-grid" id="downloadGrid"></div>
+        </div>
     </div>
 
-    <div class="progress" id="progress">
-        <div>Processing... Please wait...</div>
-        <div>This may take several minutes depending on the file size</div>
-    </div>
-
-    <div class="error" id="error"></div>
-
-    <div class="downloads" id="downloads" style="display: none;">
-        <h3>Download Separated Tracks:</h3>
-        <div class="download-grid" id="downloadGrid"></div>
-    </div>
-
+    <!-- Trumpet Guy GIF -->
+    <img src="https://web.archive.org/web/20090829191805/http://geocities.com/BourbonStreet/Inn/6163/skulltrumpet.gif" alt="Trumpet Guy" class="trumpet-guy">
     <script>
         async function downloadFile(url, filename) {
             try {
@@ -158,7 +253,11 @@
 
                 if (response.ok) {
                     downloadGrid.innerHTML = '';
-                    data.output_files.forEach(file => {
+
+                    // Filter files to only include those that end with 'karaoke-version.mp3'
+                    const karaokeFiles = data.output_files.filter(file => file.endsWith('karaoke-version.mp3'));
+
+                    karaokeFiles.forEach(file => {
                         const downloadUrl = `/download/${data.base_path}/${file}`;
                         downloadGrid.innerHTML += `
                             <a href="#"
@@ -168,7 +267,12 @@
                             </a>
                         `;
                     });
-                    downloads.style.display = 'block';
+
+                    if (karaokeFiles.length === 0) {
+                        showError('No karaoke-version.mp3 file found.');
+                    } else {
+                        downloads.style.display = 'block';
+                    }
                 } else {
                     showError(data.error || 'Upload failed');
                 }
@@ -181,4 +285,3 @@
     </script>
 </body>
 </html>
-
