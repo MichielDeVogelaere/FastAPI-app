@@ -62,13 +62,13 @@ async def upload_file(file: UploadFile = File(...)):
 
         # Define the output directory before running Demucs
         base_name = os.path.splitext(file.filename)[0]
-        output_dir = os.path.join(OUTPUT_DIR, "htdemucs_ft", base_name)
+        output_dir = os.path.join(OUTPUT_DIR, "htdemucs", base_name)
 
         # Ensure the output directory exists
         os.makedirs(output_dir, exist_ok=True)
 
         # Run Demucs processing
-        cmd = f"python3 -m demucs -n htdemucs_ft --mp3 --out {OUTPUT_DIR} {file_path}"
+        cmd = f"python3 -m demucs -n htdemucs --mp3 -j 2 --overlap 0.25 --shifts 1 --two-stems=vocals --out {OUTPUT_DIR} {file_path}"
         logging.info(f"Running command: {cmd}")
         returncode = await run_demucs_command(cmd)
 
@@ -82,7 +82,7 @@ async def upload_file(file: UploadFile = File(...)):
             return JSONResponse({
                 "message": "Processing complete",
                 "output_files": output_files,
-                "base_path": f"htdemucs_ft/{base_name}"
+                "base_path": f"htdemucs/{base_name}"
             })
         else:
             logging.error("Demucs processing failed.")
@@ -95,4 +95,3 @@ async def upload_file(file: UploadFile = File(...)):
         return JSONResponse({
             "error": str(e)
         }, status_code=500)
-
