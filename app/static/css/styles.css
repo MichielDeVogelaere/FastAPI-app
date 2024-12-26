@@ -1,0 +1,161 @@
+/* General Body Styling */
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-color: #ffcc99;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-image: url('https://web.archive.org/web/20090820112641/http://geocities.com/cheersthree/space2.gif');
+    background-repeat: repeat;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 2.5rem;
+    color: #00f;
+    text-shadow: 2px 2px #000;
+}
+
+/* Main Content Styling */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 5px solid #00f;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Upload Section */
+.upload-container {
+    background-color: rgba(173, 216, 230, 0.4);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 40px;
+    border: 3px solid #00f;
+}
+
+.upload-container input[type="file"] {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    width: 100%;
+    max-width: 400px;
+}
+
+.upload-container button {
+    padding: 10px 20px;
+    background-color: #00f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.upload-container button:hover {
+    background-color: #0000cc;
+}
+
+/* Progress and Error Messages */
+.progress {
+    background-image: url('https://web.archive.org/web/20091022121416/http://www.geocities.com/rmtiwari/images/ProgressIndicator.gif');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 50px;
+    display: none;
+    margin-bottom: 20px;
+}
+
+.error {
+    color: #dc3545;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: rgba(255, 0, 0, 0.8);
+    border-radius: 6px;
+    display: none;
+    text-align: center;
+}
+
+/* Download Section */
+.downloads {
+    background-color: rgba(173, 216, 230, 0.8);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    border: 3px solid #00f;
+}
+
+.downloads h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #00f;
+}
+
+.download-btn {
+    display: block;
+    background-color: #28a745;
+    color: white;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: background-color 0.3s;
+}
+
+.download-btn:hover {
+    background-color: #218838;
+}
+
+/* Responsive Grid for Download Buttons */
+.download-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: #ffcc99;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #00f;
+    border-radius: 10px;
+    border: 3px solid #ffcc99;
+}
+
+#trumpet-guy {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 100px;
+    height: 100px;
+    background-image: url('https://web.archive.org/web/20090829191805/http://geocities.com/BourbonStreet/Inn/6163/skulltrumpet.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+/* Music Waves GIF */
+.music-waves {
+    display: block;
+    margin: 20px auto;
+}
