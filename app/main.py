@@ -15,7 +15,7 @@ INPUT_DIR = "/data/input"
 OUTPUT_DIR = "/data/output"
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="/app/static"), name="static")
 
 # Mount static files for the output directory (for download)
 app.mount("/download", StaticFiles(directory=OUTPUT_DIR), name="download")

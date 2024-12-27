@@ -20,7 +20,7 @@ class TrumpetGame {
         this.resetPosition();
     }
 
-    getRandomPosition()3am-270700 {
+    getRandomPosition() {
         const maxX = window.innerWidth - 100;
         const maxY = window.innerHeight - 100;
         return {
