@@ -1,63 +1,121 @@
-# Docker Facebook Demucs
-This repository dockerizes [Demucs](https://github.com/adefossez/demucs)
-to split music tracks into different tracks (bass, drums, voice, others).
+# FastAPI-Demucs: Music Separator Service
+
+FastAPI-Demucs is a web application for audio source separation using [Facebook's Demucs](https://github.com/facebookresearch/demucs) model. This project runs the Demucs model inside a Docker container, exposing a FastAPI-based interface to interact with the service.
+
+## Features
+
+- **Music Separation**: Split audio into stems (e.g., vocals, drums, bass).
+- **GPU Support**: Leverage GPU for accelerated processing.
+- **MP3 Output**: Option to generate MP3 files for outputs.
+- **Configurable Options**: Customize model, overlap, shifts, and other parameters.
+- **FastAPI Integration**: A RESTful API to manage audio separation tasks.
+- **Dockerized**: Simplified deployment using Docker.
+
+---
+
+## Prerequisites
+
+1. **Docker** installed and running on your system.
+2. **NVIDIA GPU (optional)**: For GPU acceleration, ensure `nvidia-docker` is set up.
+3. **Make**: For managing the service via Makefile commands.
+
+---
+
+## Getting Started
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/MichielDeVogelaere/FastAPI-app.git
+cd <repository-folder>
+```
+---
+
+## Project Structure
+```
+project-root/
+├── app/
+│   ├── static/                 # Static files (e.g., index.html)
+│   └── main.py                 # FastAPI application
+├── input/                      # Directory for input audio files
+├── output/                     # Directory for processed audio outputs
+├── models/                     # Directory for Demucs models
+├── Dockerfile                  # Docker configuration file
+├── Makefile                    # Makefile with commands for the project
+└── README.md                   # Documentation (this file)
+```
+
+---
+
 
 ## Usage
-### Clone this repository
+
+### Start the Service
+To start the FastAPI service:
 ```bash
-git clone https://github.com/xserrat/docker-facebook-demucs.git demucs
+sudo make serve
 ```
-### Split a music track
-1. Copy the track you want to split into the `input` folder (e.g., `input/mysong.mp3`).
-2. Execute `demucs` via the `run` job in the `Makefile`, specifying the `track` argument with only the name of the file:
+This will:
+- Build the Docker image (if not already built).
+- Start the FastAPI server on [http://localhost:8000](http://localhost:8000).
+
+### View Logs
+To monitor server logs:
 ```bash
-make run track=mysong.mp3
-```
-
-This process will take some time the first time it is run, as the execution will:
-* Download the Docker image that is setup to run the `facebook demucs` script.
-* Download the pretrained models.
-* Execute `demucs` to split the track.
-
-Subsequent runs will not need to download the Docker image or download the models, unless the model specified has not yet been used.
-
-#### Options
-The following options are available when splitting music tracks with the `run` job:
-
-Option | Default Value | Description
---- | --- | ---
-`gpu`           | `false` | Enable Nvidia CUDA support (requires an Nvidia GPU).
-`model`         | `demucs`| The model used for audio separation. See https://github.com/facebookresearch/demucs#separating-tracks for a list of available models to use.
-`mp3output`     | `false` | Output separated audio in `mp3` format instead of the default `wav` format.
-`shifts`        | `1`     | Perform multiple predictions with random shifts (a.k.a the shift trick) of the input and average them. This makes prediction `SHIFTS` times slower. Don't use it unless you have a GPU.
-`overlap`       | `0.25`  | Control the amount of overlap between prediction windows. Default is 0.25 (i.e. 25%) which is probably fine. It can probably be reduced to 0.1 to improve separation speed.
-`jobs`          | `1`     | Specify the number of parallel jobs to run during separation. This will multiply the amount of RAM used by the same number, so be careful!
-`splittrack`    |         | Individual track to split/separate from the others (e.g., you only want to separate drums). Valid options are `bass`, `drums`, `vocals` and `other`. Other values may be allowed if the model can separate additional track types.
-
-Example commands:
-```bash
-# Use the "fine tuned" demucs model
-make run track=mysong.mp3 model=htdemucs_ft
-
-# Enable Nvidia CUDA support and output separated audio in mp3 format
-make run track=mysong.mp3 gpu=true mp3output=true
+sudo make logs
 ```
 
-### Run Interactively
-
-To experiment with other `demucs` options on the command line, you can also run the Docker image interactively via the `run-interactive` job. Note that only the `gpu` option is applicable for this job.
-
-Example:
+### Stop the Service
+To stop the FastAPI server:
 ```bash
-make run-interactive gpu=true
+sudo make stop
 ```
 
-## Building the Image
+---
 
-The Docker image can be built locally via the `build` job:
-```bash
-make build
-```
+## Configuration
+
+You can configure the behavior of Demucs by editing the `Makefile` options:
+
+| Option          | Default Value   | Description                                  |
+|------------------|-----------------|----------------------------------------------|
+| `gpu`           | `true`          | Use GPU if available (`true`/`false`).       |
+| `mp3output`     | `true`          | Output files in MP3 format.                 |
+| `model`         | `htdemucs_ft`   | The model used for audio separation.         |
+| `shifts`        | `1`             | Number of random shifts for processing.      |
+| `overlap`       | `0.25`          | Overlap percentage during processing.        |
+| `jobs`          | `1`             | Number of parallel jobs for separation.      |
+| `splittrack`    | `""`            | Specify which stems to separate (e.g., vocals). |
+
+---
+
+## API Endpoints
+
+The FastAPI application exposes the following endpoints:
+
+### `GET /`
+Returns the static `index.html` file for the application.
+
+### `POST /upload/`
+Uploads an audio file and processes it with Demucs. Upon success, it:
+- Saves the separated files to the `output` directory.
+- Renames the "no_vocals.mp3" file to "[songname]_karaoke-version.mp3".
+
+**Request:**
+- File: Upload an audio file (e.g., `.mp3`, `.wav`).
+
+**Response:**
+- `200 OK`: Returns the path to the processed file.
+- `500 Internal Server Error`: If processing fails or the output file is not found.
+
+### `GET /static`
+Serves static files from the `/app/static` directory.
+
+### `GET /download`
+Provides access to processed output files in the `/data/output` directory.
+
+---
 
 ## License
-This repository is released under the MIT license as found in the [LICENSE](LICENSE) file.
+
+This project uses Facebook's Demucs under its respective license. Ensure compliance with all licensing terms when deploying or distributing this application.
+
